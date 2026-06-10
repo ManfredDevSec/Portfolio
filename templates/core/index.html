@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- HERO -->
+<section id="hero">
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Backend Developer · Kumasi, Ghana</div>
+      <h1>Hi, I'm <span class="name-accent">Manfred Yayra Yegbe</span><br/>Building the infrastructure<br/>behind great apps.</h1>
+      <p class="hero-bio">
+        I design and ship production-grade APIs, payment flows, and notification systems —
+        primarily in Django REST Framework. Currently building
+        <strong>{{ projects|length }} platform{{ projects|length|pluralize }}</strong>
+        across fintech, marketplace, and social commerce verticals.
+      </p>
+
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="dot dot-r"></span>
+          <span class="dot dot-y"></span>
+          <span class="dot dot-g"></span>
+        </div>
+        <div class="terminal-body">
+          <span class="t-prompt">~$</span>
+          <span class="t-cmd" id="term-cmd"></span><span class="cursor" id="term-cursor"></span>
+          <div id="term-output"></div>
+        </div>
+      </div>
+
+      <div class="hero-cta">
+        <a href="#projects" class="btn btn-primary">View Projects</a>
+        <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STACK -->
+<section id="stack">
+  <div class="wrap">
+    <div class="section-label">// technical stack</div>
+    <h2>Tools of the trade</h2>
+    {% if skills %}
+    <div class="stack-grid">
+      {% for skill in skills %}
+      <div class="stack-item">
+        <div class="stack-name">{{ skill.name }}</div>
+        <div class="stack-role">{{ skill.label }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="empty-state">No skills added yet. <a href="/admin/core/skill/add/">Add one in the admin →</a></p>
+    {% endif %}
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="wrap">
+    <div class="section-label">// active builds</div>
+    <h2>What I'm shipping</h2>
+    {% if projects %}
+    <div class="projects-list">
+      {% for project in projects %}
+      <div class="project-card">
+        <div class="project-header">
+          <span class="project-name">
+            {% if project.live_url or project.github_url %}
+            <a href="{% url 'project-detail' project.slug %}" style="color:inherit;text-decoration:none;">{{ project.name }}</a>
+            {% else %}
+            {{ project.name }}
+            {% endif %}
+          </span>
+          <div class="project-status">
+            <div class="pulse-dot {% if project.status == 'archived' %}pulse-dot--muted{% endif %}"></div>
+            {{ project.status_display }}
+          </div>
+        </div>
+        {% if project.tagline %}
+        <div class="project-tagline">{{ project.tagline }}</div>
+        {% endif %}
+        <p class="project-desc">{{ project.description }}</p>
+        {% if project.all_tags %}
+        <div class="project-tags">
+          {% for tag in project.all_tags %}
+          <span class="tag">{{ tag }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% if project.github_url or project.live_url %}
+        <div class="project-links">
+          {% if project.github_url %}
+          <a href="{{ project.github_url }}" target="_blank" class="project-link">GitHub ↗</a>
+          {% endif %}
+          {% if project.live_url %}
+          <a href="{{ project.live_url }}" target="_blank" class="project-link">Live ↗</a>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="empty-state">No projects yet. <a href="/admin/core/project/add/">Add one in the admin →</a></p>
+    {% endif %}
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="wrap">
+    <div class="section-label">// background</div>
+    <h2>Experience</h2>
+    {% if experience %}
+    <div class="exp-list">
+      {% for exp in experience %}
+      <div class="exp-item">
+        <div class="exp-year">{{ exp.year_range }}</div>
+        <div>
+          <div class="exp-role">{{ exp.role }}</div>
+          <div class="exp-company">{{ exp.company }}</div>
+          <div class="exp-desc">{{ exp.description }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="empty-state">No experience entries yet. <a href="/admin/core/experience/add/">Add one in the admin →</a></p>
+    {% endif %}
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="wrap">
+    <div class="section-label">// reach out</div>
+    <h2>Let's work together</h2>
+    {% if contact_links %}
+    <div class="contact-grid">
+      {% for link in contact_links %}
+      <a href="{{ link.url }}" {% if not link.url|slice:":7" == "mailto:" %}target="_blank"{% endif %} class="contact-link">
+        <span class="contact-icon contact-icon--{{ link.icon }}"></span>
+        <div>
+          <span class="contact-label">{{ link.label }}</span>
+          <span class="contact-value">{{ link.value }}</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="empty-state">No contact links yet. <a href="/admin/core/contactlink/add/">Add one in the admin →</a></p>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const termSkills = [
+    {% for skill in skills|slice:":6" %}
+    { key: '{{ skill.category }}', val: '{{ skill.name }}{% if not forloop.last %} · {% endif %}' },
+    {% endfor %}
+  ];
+
+  // Group by category for terminal display
+  const grouped = {};
+  {% for skill in skills %}
+  if (!grouped['{{ skill.category }}']) grouped['{{ skill.category }}'] = [];
+  grouped['{{ skill.category }}'].push('{{ skill.name }}');
+  {% endfor %}
+
+  const outputLines = Object.entries(grouped).slice(0, 6).map(
+    ([k, v]) => `  <span class="t-key">${k.padEnd(12)}</span><span class="t-out">${v.slice(0,3).join(' · ')}</span>`
+  );
+
+  const cmdEl = document.getElementById('term-cmd');
+  const outEl = document.getElementById('term-output');
+  const cursor = document.getElementById('term-cursor');
+  const cmdText = 'darktrace --skills';
+  let i = 0;
+
+  function typeCmd() {
+    if (i < cmdText.length) {
+      cmdEl.textContent += cmdText[i++];
+      setTimeout(typeCmd, 55);
+    } else {
+      cursor.style.display = 'none';
+      setTimeout(showOutput, 300);
+    }
+  }
+
+  function showOutput() {
+    let idx = 0;
+    function next() {
+      if (idx < outputLines.length) {
+        const line = document.createElement('div');
+        line.innerHTML = outputLines[idx++];
+        line.style.opacity = '0';
+        line.style.transition = 'opacity 0.3s';
+        outEl.appendChild(line);
+        requestAnimationFrame(() => { line.style.opacity = '1'; });
+        setTimeout(next, 160);
+      }
+    }
+    next();
+  }
+
+  setTimeout(typeCmd, 800);
+</script>
+{% endblock %}

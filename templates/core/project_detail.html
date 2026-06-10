@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.name }} — DarkTrace{% endblock %}
+
+{% block content %}
+<section id="project-detail">
+  <div class="wrap" style="padding-top: 120px; padding-bottom: 80px;">
+    <a href="{% url 'index' %}#projects" style="font-family:var(--mono);font-size:13px;color:var(--muted);display:inline-flex;align-items:center;gap:6px;margin-bottom:40px;">
+      ← Back to projects
+    </a>
+
+    <div class="project-status" style="margin-bottom:16px;">
+      <div class="pulse-dot"></div>
+      {{ project.status_display }}
+    </div>
+
+    <h1 style="font-size:clamp(28px,5vw,48px);margin-bottom:12px;">{{ project.name }}</h1>
+
+    {% if project.tagline %}
+    <p style="font-family:var(--mono);font-size:15px;color:var(--accent);margin-bottom:32px;">{{ project.tagline }}</p>
+    {% endif %}
+
+    <p style="font-size:16px;color:var(--muted);max-width:620px;line-height:1.8;margin-bottom:40px;">
+      {{ project.description }}
+    </p>
+
+    {% if project.all_tags %}
+    <div class="project-tags" style="margin-bottom:40px;">
+      {% for tag in project.all_tags %}
+      <span class="tag">{{ tag }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if project.github_url or project.live_url %}
+    <div style="display:flex;gap:16px;flex-wrap:wrap;">
+      {% if project.github_url %}
+      <a href="{{ project.github_url }}" target="_blank" class="btn btn-ghost">GitHub ↗</a>
+      {% endif %}
+      {% if project.live_url %}
+      <a href="{{ project.live_url }}" target="_blank" class="btn btn-primary">View Live ↗</a>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

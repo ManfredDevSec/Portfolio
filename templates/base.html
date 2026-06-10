@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{% block title %}DarkTrace — Backend Developer{% endblock %}</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/main.css' %}" />
+{% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a href="{% url 'index' %}" class="nav-logo">~/DarkTrace</a>
+    <ul class="nav-links">
+      <li><a href="{% url 'index' %}#stack">Stack</a></li>
+      <li><a href="{% url 'index' %}#projects">Projects</a></li>
+      <li><a href="{% url 'index' %}#experience">Experience</a></li>
+      <li><a href="{% url 'index' %}#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+{% block content %}{% endblock %}
+
+<footer>
+  <div class="wrap">
+    Built with Django · <span style="color:var(--accent)">DarkTrace</span> · 2025
+  </div>
+</footer>
+
+<script src="{% static 'js/main.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>
