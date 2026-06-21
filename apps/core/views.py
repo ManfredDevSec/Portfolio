@@ -22,7 +22,6 @@ def _call_api(view_class, request, **kwargs):
 def index(request):
     data = _call_api(PortfolioDataAPIView, request)
 
-    # Group skills by category for the template
     skills_by_category = {}
     for skill in data.get('skills', []):
         cat = skill['category']
