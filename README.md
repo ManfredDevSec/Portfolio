@@ -48,4 +48,4 @@ portfolio/
 
 ## License
 
-MIT
+MIT\n
