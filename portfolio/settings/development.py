@@ -1,6 +1,6 @@
 from .base import *
 import environ
-
+import dj_database_url
 env = environ.Env()
 environ.Env.read_env()
 

@@ -8,6 +8,7 @@ class Skill(models.Model):
         ('infra', 'Infrastructure'),
         ('service', 'Third-party Service'),
         ('language', 'Language'),
+        ('security', 'Security'),
         ('other', 'Other'),
     ]
 
