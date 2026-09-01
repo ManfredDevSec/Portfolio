@@ -33,6 +33,7 @@ logs/
 db.sqlite3
 staticfiles/
 media/
+local_storage/
 
 # IDE
 .vscode/
